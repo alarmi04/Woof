@@ -1,33 +1,53 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Animal;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
+/**
+ * Controlador para gestionar las operaciones relacionadas con los Animales (perros).
+ * Maneja el listado, filtrado y visualización de los animales en adopción.
+ */
 class AnimalController extends Controller
 {
+    /**
+     * Muestra el listado de animales con opciones de filtrado.
+     * 
+     * @param \Illuminate\Http\Request $request Objeto con los parámetros de la petición (filtros).
+     * @return \Inertia\Response Renderiza la vista 'Adopta' con los datos filtrados.
+     */
     public function index(Request $request)
     {
-        $query = Animal::where('Estado', 'Disponible');
+        // Iniciamos la consulta base
+        $consulta = Animal::query();
 
-        if ($request->tamano !== "todos") {
-            $query->where('Tamano', $request->tamano);
+        // Filtrado por tamaño
+        if ($request->has('tamano') && $request->tamano != 'todos') {
+            $consulta->where('Tamano', 'LIKE', $request->tamano);
         }
 
-        if ($request->genero !== "todos") {
-            $query->where('Genero', $request->genero);
+        // Filtrado por edad
+        if ($request->has('edad') && $request->edad != 'todos') {
+            $consulta->where('Edad', 'LIKE', $request->edad);
         }
 
-        if ($request->edad !== "todos") {
-            $query->where('Edad', $request->edad);
+        // Filtrado por género
+        if ($request->has('genero') && $request->genero != 'todos') {
+            $consulta->where('Genero', 'LIKE', $request->genero);
         }
 
-        $perros = $query->get();
+        // Ejecutamos la consulta y obtenemos los resultados
+        $perros = $consulta->get();
 
-        return Inertia::render('Perros/Index', [
+        /**
+         * Devolvemos la respuesta a través de Inertia, pasando los perros 
+         * y los filtros aplicados para mantener el estado en el frontend.
+         */
+        return Inertia::render('Adopta', [
             'perros' => $perros,
-            'filtros' => $request->only(['tamano', 'edad', 'genero'])
+            'filtros' => $request->only(['tamano', 'edad', 'genero']),
         ]);
     }
 }
