@@ -73,6 +73,9 @@ const procesarDonacion = () => {
                 <div class="ranking-grid" v-if="ranking && ranking.length > 0">
                     <div v-for="(donante, index) in ranking" :key="index" class="ranking-card" :class="'top-' + (index + 1)">
                         <div class="rank-number">{{ index + 1 }}</div>
+                        <div class="donor-avatar">
+                            <img :src="donante.Foto ? '/storage/' + donante.Foto : '/images/default-avatar.png'" alt="Donante">
+                        </div>
                         <div class="donor-info">
                             <span class="donor-name">{{ donante.donante }}</span>
                             <span class="donor-total">{{ donante.total }}€</span>
@@ -263,6 +266,20 @@ const procesarDonacion = () => {
     font-weight: 900;
     color: #ccc;
     width: 40px;
+}
+
+.donor-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #eee;
+}
+
+.donor-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .top-1 .rank-number { color: #FFD700; font-size: 2rem; }

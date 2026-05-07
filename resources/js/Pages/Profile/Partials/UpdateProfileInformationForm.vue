@@ -1,3 +1,4 @@
+<script setup>
 import { computed, ref } from 'vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -28,15 +29,15 @@ const usuario = computed(() => pagina.props.auth.user);
  */
 const form = useForm({
     _method: 'patch',
-    name: usuario.value.Nombre,
-    email: usuario.value.Correo,
-    telefono: usuario.value.Telefono || '',
-    direccion: usuario.value.Direccion || '',
-    tipo_vivienda: usuario.value.Tipo_vivienda || '',
-    numero_hijos: usuario.value.Numero_hijos || 0,
-    nivel_actividad: usuario.value.Nivel_actividad || null,
-    experiencia_mascotas: usuario.value.Experiencia_mascotas || null,
-    tiempo_disponible: usuario.value.Tiempo_disponible || null,
+    name: usuario.value?.Nombre || '',
+    email: usuario.value?.Correo || '',
+    telefono: usuario.value?.Telefono || '',
+    direccion: usuario.value?.Direccion || '',
+    tipo_vivienda: usuario.value?.Tipo_vivienda || '',
+    numero_hijos: usuario.value?.Numero_hijos || 0,
+    nivel_actividad: usuario.value?.Nivel_actividad || null,
+    experiencia_mascotas: usuario.value?.Experiencia_mascotas || null,
+    tiempo_disponible: usuario.value?.Tiempo_disponible || null,
     foto: null,
 });
 

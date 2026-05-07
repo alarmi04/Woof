@@ -27,10 +27,11 @@ class DonacionController extends Controller
          */
         $ranking = Donacion::select(
                 DB::raw('COALESCE(Usuario.Nombre, "Anónimo") as donante'),
-                DB::raw('SUM(Cantidad) as total')
+                DB::raw('SUM(Cantidad) as total'),
+                'Usuario.Foto'
             )
             ->leftJoin('Usuario', 'Donacion.idUsuario', '=', 'Usuario.idUsuario')
-            ->groupBy('donante')
+            ->groupBy('donante', 'Usuario.Foto')
             ->orderBy('total', 'desc')
             ->limit(10)
             ->get();
