@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -24,16 +25,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+
 // Rutas a las diferentes páginas de la web.
 Route::get('/home', function () {
     return Inertia::render('Home');
-});
-Route::get('/adopta', function () {
-    return Inertia::render('Adopta');
-});
-Route::get('/perros-recomendados', function () {
-    return Inertia::render('PerrosRecomendados');
-});
+})->name('home');
+Route::get('/adopta', [AnimalController::class, 'index'])->name('adopta');
+Route::get('/perros-recomendados', [\App\Http\Controllers\RecommendationController::class, 'index'])->name('perros-recomendados');
+Route::get('/donaciones', [\App\Http\Controllers\DonacionController::class, 'index'])->name('donaciones');
+Route::post('/donaciones', [\App\Http\Controllers\DonacionController::class, 'store'])->name('donaciones.store');
+
 Route::get('/contacto', function () {
     return Inertia::render('Contacto');
 });
