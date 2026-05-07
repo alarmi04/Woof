@@ -1,55 +1,181 @@
 <script setup>
+/**
+ * Componente para la página de Adopción.
+ * Permite listar y filtrar los perros disponibles en el refugio.
+ */
+import { computed } from 'vue';
+import { Link, usePage } from '@inertiajs/vue3';
 import Header from '@/Components/Header.vue';
-import Footer from '@/Components/Footer.vue';   
+import Footer from '@/Components/Footer.vue';
 
+// Acceso a los datos de la página proporcionados por Inertia
+const pagina = usePage();
+
+/**
+ * Listado de perros disponibles obtenido de las propiedades de la página.
+ */
+const perros = computed(() => pagina.props.perros ?? []);
+
+/**
+ * Estado actual de los filtros de búsqueda (tamaño, edad, género).
+ */
+const filtros = computed(() => ({
+    tamano: pagina.props.filtros?.tamano ?? 'todos',
+    edad: pagina.props.filtros?.edad ?? 'todos',
+    genero: pagina.props.filtros?.genero ?? 'todos',
+}));
+
+/**
+ * Genera el enlace (URL) para aplicar un filtro específico.
+ * 
+ * @param {string} campo - El nombre del filtro (ej: 'tamano').
+ * @param {string} valor - El valor del filtro (ej: 'grande').
+ * @returns {string} La URL completa con los parámetros de búsqueda.
+ */
+const generarEnlaceFiltro = (campo, valor) => {
+    const parametros = {
+        ...filtros.value,
+        [campo]: valor,
+    };
+
+    // Uso de Ziggy para generar la ruta si está disponible
+    if (typeof route === 'function') {
+        return route('adopta', parametros);
+    }
+
+    // Fallback manual en caso de que route() no esté definido
+    const consulta = new URLSearchParams(parametros).toString();
+    return `/adopta?${consulta}`;
+};
 </script>
 
 <template>
-    <Header></Header>
+    <Header />
+
     <section id="adopcion">
         <div class="adopcion-container">
             <h1>Encuentra a tu Compañero Perfecto</h1>
-            <p class="adopcion-subtitle">Todos nuestros perritos estan esperando un hogar lleno de amor</p>
+            <p class="adopcion-subtitle">Todos nuestros perritos están esperando un hogar lleno de amor</p>
 
             <div class="filtros-container">
-
                 <div class="filtro-grupo">
-                    <label>Tamaño: </label>
+                    <label>Tamaño:</label>
                     <div class="filtro-botones">
-                        <button class="filtro-btn active"  data-filtro="tamaño" data-valor="todos">Todos</button>
-                        <button class="filtro-btn" data-filtro="tamaño" data-valor="pequeño">Pequeño</button>
-                        <button class="filtro-btn" data-filtro="tamaño" data-valor="mediano">Mediano</button>
-                        <button class="filtro-btn" data-filtro="tamaño" data-valor="grande">Grande</button>
+                        <Link
+                            class="filtro-btn"
+                            :class="{ active: filtros.tamano === 'todos' }"
+                            :href="generarEnlaceFiltro('tamano', 'todos')"
+                        >
+                            Todos
+                        </Link>
+                        <Link
+                            class="filtro-btn"
+                            :class="{ active: filtros.tamano === 'pequeño' }"
+                            :href="generarEnlaceFiltro('tamano', 'pequeño')"
+                        >
+                            Pequeño
+                        </Link>
+                        <Link
+                            class="filtro-btn"
+                            :class="{ active: filtros.tamano === 'mediano' }"
+                            :href="generarEnlaceFiltro('tamano', 'mediano')"
+                        >
+                            Mediano
+                        </Link>
+                        <Link
+                            class="filtro-btn"
+                            :class="{ active: filtros.tamano === 'grande' }"
+                            :href="generarEnlaceFiltro('tamano', 'grande')"
+                        >
+                            Grande
+                        </Link>
                     </div>
                 </div>
 
                 <div class="filtro-grupo">
                     <label>Edad:</label>
                     <div class="filtro-botones">
-                        <button class="filtro-btn active" data-filtro="edad" data-valor="todos">Todos</button>
-                        <button class="filtro-btn" data-filtro="edad" data-valor="joven">Joven</button>
-                        <button class="filtro-btn" data-filtro="edad" data-valor="adulto">Adulto</button>
-                        <button class="filtro-btn" data-filtro="edad" data-valor="senior">Senior</button>
+                        <Link
+                            class="filtro-btn"
+                            :class="{ active: filtros.edad === 'todos' }"
+                            :href="generarEnlaceFiltro('edad', 'todos')"
+                        >
+                            Todos
+                        </Link>
+                        <Link
+                            class="filtro-btn"
+                            :class="{ active: filtros.edad === 'joven' }"
+                            :href="generarEnlaceFiltro('edad', 'joven')"
+                        >
+                            Joven
+                        </Link>
+                        <Link
+                            class="filtro-btn"
+                            :class="{ active: filtros.edad === 'adulto' }"
+                            :href="generarEnlaceFiltro('edad', 'adulto')"
+                        >
+                            Adulto
+                        </Link>
+                        <Link
+                            class="filtro-btn"
+                            :class="{ active: filtros.edad === 'senior' }"
+                            :href="generarEnlaceFiltro('edad', 'senior')"
+                        >
+                            Senior
+                        </Link>
                     </div>
                 </div>
 
                 <div class="filtro-grupo">
                     <label>Sexo:</label>
                     <div class="filtro-botones">
-                        <button class="filtro-btn active" data-filtro="sexo" data-valor="todos">Todos</button>
-                        <button class="filtro-btn" data-filtro="sexo" data-valor="macho">Macho</button>
-                        <button class="filtro-btn" data-filtro="sexo" data-valor="hembra">Hembra</button>
+                        <Link
+                            class="filtro-btn"
+                            :class="{ active: filtros.genero === 'todos' }"
+                            :href="generarEnlaceFiltro('genero', 'todos')"
+                        >
+                            Todos
+                        </Link>
+                        <Link
+                            class="filtro-btn"
+                            :class="{ active: filtros.genero === 'Macho' }"
+                            :href="generarEnlaceFiltro('genero', 'Macho')"
+                        >
+                            Macho
+                        </Link>
+                        <Link
+                            class="filtro-btn"
+                            :class="{ active: filtros.genero === 'Hembra' }"
+                            :href="generarEnlaceFiltro('genero', 'Hembra')"
+                        >
+                            Hembra
+                        </Link>
                     </div>
                 </div>
             </div>
-      
-            <div class="perros-grid" id="perrosGrid"></div>
-            <div class="no-resultados" id="noResultados" style="display: none">
+
+            <div v-if="perros.length" class="perros-grid">
+                <div v-for="perro in perros" :key="perro.id" class="perro-card">
+                    <img :src="perro.Imagen || perro.imagen || '/images/default-perro.jpg'" :alt="perro.Nombre || perro.nombre || 'Foto del perro'" class="perro-imagen" />
+                    <div class="perro-info">
+                        <h2 class="perro-nombre">{{ perro.Nombre || perro.nombre || 'Sin nombre' }}</h2>
+                        <div class="perro-detalles">
+                            <span class="perro-tag">{{ perro.Tamano || perro.tamano }}</span>
+                            <span class="perro-tag">{{ perro.Edad || perro.edad }}</span>
+                            <span class="perro-tag">{{ perro.Genero || perro.genero }}</span>
+                        </div>
+                        <p class="perro-descripcion">{{ perro.Descripcion || perro.descripcion || 'No hay descripción disponible.' }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div v-else class="no-resultados">
                 <p>😔 No encontramos perritos con esos filtros.</p>
             </div>
         </div>
     </section>
-    <Footer></Footer>
+
+    <Footer />
 </template>
 
 <style>

@@ -1,6 +1,8 @@
 <script setup>
 import Header from '@/Components/Header.vue';
 import Footer from '@/Components/Footer.vue';
+import { Link } from '@inertiajs/vue3';
+
 </script>
 
 <template>
@@ -17,7 +19,7 @@ import Footer from '@/Components/Footer.vue';
             Miles de perritos esperan un hogar lleno de amor. Adopta hoy y
             cambia dos vidas para siempre: la tuya y la suya.
           </p>
-          <a href="./adopta.html" class="hero-btn">Ver perritos disponibles</a>
+          <Link href="./adopta" class="hero-btn">Ver perritos disponibles</Link>
         </div>
     </section>
 
