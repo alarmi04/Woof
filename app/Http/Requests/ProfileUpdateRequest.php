@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\User;
+use App\Models\Usuario;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -17,15 +17,23 @@ class ProfileUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:100'],
             'email' => [
                 'required',
                 'string',
                 'lowercase',
                 'email',
-                'max:255',
-                Rule::unique(User::class)->ignore($this->user()->id),
+                'max:150',
+                Rule::unique(Usuario::class, 'Correo')->ignore($this->user()->idUsuario, 'idUsuario'),
             ],
+            'telefono' => ['nullable', 'string', 'max:20'],
+            'direccion' => ['nullable', 'string', 'max:200'],
+            'tipo_vivienda' => ['nullable', 'string', 'in:piso,casa_sin_jardin,casa_con_jardin'],
+            'numero_hijos' => ['nullable', 'integer', 'min:0'],
+            'nivel_actividad' => ['nullable', 'integer', 'in:1,2,3'],
+            'experiencia_mascotas' => ['nullable', 'integer', 'in:0,1,2'],
+            'tiempo_disponible' => ['nullable', 'integer', 'min:0'],
+            'foto' => ['nullable', 'image', 'max:2048'], // Max 2MB
         ];
     }
 }
