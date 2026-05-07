@@ -25,6 +25,9 @@ return new class extends Migration {
             $table->boolean('Experiencia_requerida')->nullable();
             $table->tinyInteger('Tiempo_requerido')->nullable();
             $table->string('Imagen', 255)->nullable();
+            $table->unsignedBigInteger('idUsuario')->nullable();
+
+            $table->foreign('idUsuario')->references('idUsuario')->on('Usuario');
         });
     }
 
