@@ -1,0 +1,43 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Usuario;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
+
+/**
+ * @extends Factory<Usuario>
+ */
+class UsuarioFactory extends Factory
+{
+    protected $model = Usuario::class;
+    /**
+     * The current password being used by the factory.
+     */
+    protected static ?string $password;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'Nombre' => fake()->name(),
+            'Correo' => fake()->unique()->safeEmail(),
+            'Contrasena' => static::$password ??= Hash::make('password'),
+        ];
+    }
+
+    /**
+     * Indicate that the model's account is unverified.
+     */
+    public function unverified(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'Correo' => $attributes['Correo'] ?? $this->faker->unique()->safeEmail(),
+        ]);
+    }
+}

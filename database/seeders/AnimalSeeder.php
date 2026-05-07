@@ -12,43 +12,24 @@ class AnimalSeeder extends Seeder
     {
         // Tamano, Nivel_actividad (1=bajo,2=medio,3=alto), Vivienda, Apto_ninos, Experiencia_requerida, Tiempo_requerido
         $razas = [
-            'Labrador' => ['grande', 3, 'casa_con_jardin', 1, 0, 4],
-            'Beagle' => ['mediano', 2, 'cualquiera', 1, 0, 2],
-            'Pastor Alemán' => ['grande', 3, 'casa_con_jardin', 0, 1, 5],
-            'Chihuahua' => ['pequeno', 1, 'piso', 1, 0, 1],
-            'Golden Retriever' => ['grande', 2, 'casa_sin_jardin', 1, 0, 3],
-            'Poodle' => ['pequeno', 1, 'piso', 1, 0, 2],
-            'Bulldog Francés' => ['pequeno', 1, 'piso', 1, 0, 1],
-            'Rottweiler' => ['grande', 2, 'casa_con_jardin', 0, 1, 4],
-            'Husky Siberiano' => ['grande', 3, 'casa_con_jardin', 0, 1, 5],
-            'Dálmata' => ['grande', 3, 'casa_con_jardin', 1, 0, 4],
+            'Labrador' => ['grande', 'labrador', 3, 'casa_con_jardin', 1, 0, 4],
+            'Beagle' => ['mediano', 'beagle', 2, 'cualquiera', 1, 0, 2],
+            'Pastor Alemán' => ['grande', 'germanshepherd', 3, 'casa_con_jardin', 0, 1, 5],
+            'Chihuahua' => ['pequeño', 'chihuahua', 1, 'piso', 1, 0, 1],
+            'Golden Retriever' => ['grande', 'golden', 2, 'casa_sin_jardin', 1, 0, 3],
+            'Poodle' => ['pequeño', 'poodle', 1, 'piso', 1, 0, 2],
+            'Bulldog Francés' => ['pequeño', 'bulldog/french', 1, 'piso', 1, 0, 1],
+            'Rottweiler' => ['grande', 'rottweiler', 2, 'casa_con_jardin', 0, 1, 4],
+            'Husky Siberiano' => ['grande', 'husky', 3, 'casa_con_jardin', 0, 1, 5],
+            'Dálmata' => ['grande', 'dalmatian', 3, 'casa_con_jardin', 1, 0, 4],
         ];
-        $nombres = [
-            'Rocky',
-            'Luna',
-            'Max',
-            'Nala',
-            'Toby',
-            'Coco',
-            'Bella',
-            'Thor',
-            'Lola',
-            'Bruno',
-            'Daisy',
-            'Zeus',
-            'Mia',
-            'Rex',
-            'Kira',
-            'Simba',
-            'Nina',
-            'Buddy',
-            'Laika',
-            'Duke',
-            'Sasha',
-            'Goku',
-            'Vera',
-            'Axel',
-            'Leia',
+
+        $nombresMasc = [
+            'Rocky', 'Max', 'Toby', 'Thor', 'Bruno', 'Zeus', 'Rex', 'Simba', 'Buddy', 'Duke', 'Goku', 'Axel', 'Milo', 'Leo', 'Oscar', 'Charlie', 'Kaiser', 'Shadow', 'Bobby', 'Rocco', 'Apollo', 'Loki', 'Nico', 'Ranger', 'Coco'
+        ];
+
+        $nombresHembra = [
+            'Luna', 'Nala', 'Coco', 'Bella', 'Lola', 'Daisy', 'Mia', 'Kira', 'Nina', 'Laika', 'Sasha', 'Vera', 'Leia', 'Maya', 'Luna', 'Ruby', 'Molly', 'Lola', 'Zoe', 'Lila', 'Mila', 'Sasha', 'Penny', 'Daisy', 'Ella'
         ];
 
         $descripciones = [
@@ -66,32 +47,20 @@ class AnimalSeeder extends Seeder
 
         $etapas = ['joven', 'adulto', 'senior'];
 
-        $razasApi = [
-            'labrador',
-            'beagle',
-            'germanshepherd',
-            'chihuahua',
-            'golden',
-            'poodle',
-            'bulldog',
-            'rottweiler',
-            'husky',
-            'dalmatian'
-        ];
-
-        // Obtener imágenes reales de Dog CEO API
         $imagenesUrl = [];
-        foreach ($razasApi as $raza) {
-            $response = Http::get("https://dog.ceo/api/breed/{$raza}/images/random/3");
+        foreach ($razas as $raza => $info) {
+            $breedSlug = $info[1];
+            $response = Http::get("https://dog.ceo/api/breed/{$breedSlug}/images/random/3");
             if ($response->successful()) {
                 foreach ($response->json()['message'] as $url) {
-                    $imagenesUrl[] = $url;
+                    $imagenesUrl[$raza][] = $url;
                 }
             }
         }
 
-        while (count($imagenesUrl) < 25) {
-            $imagenesUrl[] = 'https://placedog.net/400/300?id=' . count($imagenesUrl);
+        $fallback = [];
+        while (count($fallback) < 25) {
+            $fallback[] = 'https://placedog.net/400/300?id=' . count($fallback);
         }
 
         $animales = [];
@@ -99,24 +68,35 @@ class AnimalSeeder extends Seeder
 
         for ($i = 0; $i < 25; $i++) {
             $raza = $razasLista[$i % count($razasLista)];
-            [$tamano, $nivel_actividad, $vivienda, $apto_ninos, $experiencia, $tiempo] = $razas[$raza];
+            [$tamano, $breedSlug, $nivel_actividad, $vivienda, $apto_ninos, $experiencia, $tiempo] = $razas[$raza];
 
-            $etapa = $etapas[$i % count($etapas)];
+            $genero = $i % 2 === 0 ? 'Macho' : 'Hembra';
+            $nombre = $genero === 'Macho'
+                ? $nombresMasc[$i % count($nombresMasc)]
+                : $nombresHembra[$i % count($nombresHembra)];
+
+            $imagen = null;
+            if (!empty($imagenesUrl[$raza])) {
+                $imagen = $imagenesUrl[$raza][$i % count($imagenesUrl[$raza])];
+            }
+            if (! $imagen) {
+                $imagen = $fallback[$i % count($fallback)];
+            }
 
             $animales[] = [
-                'Nombre' => $nombres[$i],
+                'Nombre' => $nombre,
                 'Raza' => $raza,
-                'Genero' => $i % 2 === 0 ? 'Macho' : 'Hembra',
+                'Genero' => $genero,
                 'Edad' => $etapas[$i % count($etapas)],
                 'Tamano' => $tamano,
-                'Estado' => 'disponible',
+                'Estado' => 'Disponible',
                 'Descripcion' => $descripciones[$i % count($descripciones)],
                 'Nivel_actividad' => $nivel_actividad,
                 'Vivienda_recomendada' => $vivienda,
                 'Apto_ninos' => $apto_ninos,
                 'Experiencia_requerida' => $experiencia,
                 'Tiempo_requerido' => $tiempo,
-                'Imagen' => $imagenesUrl[$i] ?? 'https://placedog.net/400/300?id=' . $i,
+                'Imagen' => $imagen,
             ];
         }
 
