@@ -29,13 +29,38 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $validated = $request->validated();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $data = [
+            'Nombre' => $validated['name'],
+            'Correo' => $validated['email'],
+            'Telefono' => $validated['telefono'] ?? null,
+            'Direccion' => $validated['direccion'] ?? null,
+            'Tipo_vivienda' => $validated['tipo_vivienda'] ?? null,
+            'Numero_hijos' => $validated['numero_hijos'] ?? 0,
+            'Nivel_actividad' => $validated['nivel_actividad'] ?? null,
+            'Experiencia_mascotas' => $validated['experiencia_mascotas'] ?? null,
+            'Tiempo_disponible' => $validated['tiempo_disponible'] ?? null,
+        ];
+
+        if ($request->hasFile('foto')) {
+            // Delete old photo if it exists
+            if ($user->Foto) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->Foto);
+            }
+            $path = $request->file('foto')->store('perfiles', 'public');
+            $data['Foto'] = $path;
         }
 
-        $request->user()->save();
+        $user->fill($data);
+
+        if ($user->isDirty('Correo')) {
+            // If you have email verification, you might want to reset it here
+            // $user->email_verified_at = null;
+        }
+
+        $user->save();
 
         return Redirect::route('profile.edit');
     }
