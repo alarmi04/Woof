@@ -1,4 +1,13 @@
 <?php
+/**
+ * ==============================================================================
+ * FICHERO: app/Models/Animal.php
+ * AUTOR: Alberto
+ * FECHA CREACIÓN: 2026-04-25
+ * FUNCIÓN: Modelo Eloquent que representa la entidad Animal (perro en adopción)
+ *          y gestiona sus relaciones y accesores en la base de datos.
+ * ==============================================================================
+ */
 
 namespace App\Models;
 
@@ -45,7 +54,10 @@ class Animal extends Model
     ];
 
     /**
-     * Accesor para obtener la URL completa de la imagen.
+     * ACCESOR: getImagenUrlAttribute
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-04-25
+     * FUNCIÓN: Devuelve la ruta URL completa para acceder a la foto del animal.
      */
     public function getImagenUrlAttribute()
     {
@@ -56,7 +68,10 @@ class Animal extends Model
     }
 
     /**
-     * Relación con el usuario (dueño o protector).
+     * RELACIÓN: usuario
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-04-25
+     * FUNCIÓN: Define la relación de pertenencia N:1 del perro con su usuario adoptante.
      */
     public function usuario()
     {

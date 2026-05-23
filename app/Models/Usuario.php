@@ -1,4 +1,13 @@
 <?php
+/**
+ * ==============================================================================
+ * FICHERO: app/Models/Usuario.php
+ * AUTOR: Alberto
+ * FECHA CREACIÓN: 2026-04-25
+ * FUNCIÓN: Modelo de autenticación que representa a la entidad Usuario,
+ *          gestionando los campos de perfil del adoptante y roles de acceso.
+ * ==============================================================================
+ */
 
 namespace App\Models;
 
@@ -72,8 +81,11 @@ class Usuario extends Authenticatable
     }
 
     /**
-     * Mutador (Setter) para la columna Contrasena.
-     * Asegura que cualquier valor asignado sea hasheado automáticamente con Bcrypt.
+     * MUTADOR: setContrasenaAttribute
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-04-25
+     * FUNCIÓN: Setter para la columna Contrasena.
+     *          Asegura que el valor sea hasheado automáticamente con Bcrypt.
      */
     public function setContrasenaAttribute($valor)
     {
@@ -83,7 +95,10 @@ class Usuario extends Authenticatable
     }
 
     /**
-     * Relación con los animales registrados por el usuario.
+     * RELACIÓN: animales
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-04-25
+     * FUNCIÓN: Define la relación 1:N con los animales adoptados por el usuario.
      */
     public function animales()
     {

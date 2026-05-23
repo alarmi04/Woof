@@ -1,4 +1,13 @@
 <?php
+/**
+ * ==============================================================================
+ * FICHERO: app/Http/Controllers/RecommendationController.php
+ * AUTOR: Alberto
+ * FECHA CREACIÓN: 2026-04-25
+ * FUNCIÓN: Controlador que comunica el backend de Laravel con el motor
+ *          de recomendaciones en Python para calcular los mejores matches.
+ * ==============================================================================
+ */
 
 namespace App\Http\Controllers;
 
@@ -16,8 +25,11 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class RecommendationController extends Controller
 {
     /**
-     * Muestra la página de perros recomendados para el usuario actual.
-     * Realiza una validación del perfil y consulta al script de Python para obtener los mejores matches.
+     * MÉTODO: index
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-04-25
+     * FUNCIÓN: Muestra la página de perros recomendados para el usuario actual.
+     *          Valida el perfil, invoca al script Python y pasa los resultados a Inertia.
      *
      * @return \Inertia\Response
      */

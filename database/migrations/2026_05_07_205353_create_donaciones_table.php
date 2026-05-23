@@ -1,4 +1,13 @@
 <?php
+/**
+ * ==============================================================================
+ * FICHERO: database/migrations/2026_05_07_205353_create_donaciones_table.php
+ * AUTOR: Alberto
+ * FECHA CREACIÓN: 2026-05-07
+ * FUNCIÓN: Migración de base de datos que define la estructura física y las
+ *          restricciones referenciales de la tabla 'Donacion' (registro de aportes).
+ * ==============================================================================
+ */
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -7,7 +16,11 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Ejecuta las migraciones para crear la tabla de donaciones.
+     * MÉTODO: up
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-05-07
+     * FUNCIÓN: Crea la tabla física 'Donacion' con sus relaciones referenciales
+     *          onDelete('set null') para usuarios y materiales donados.
      */
     public function up(): void
     {
@@ -27,7 +40,10 @@ return new class extends Migration
     }
 
     /**
-     * Revierte las migraciones.
+     * MÉTODO: down
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-05-07
+     * FUNCIÓN: Revierte la migración eliminando la tabla física 'Donacion' de MySQL.
      */
     public function down(): void
     {

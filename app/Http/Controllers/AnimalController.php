@@ -1,4 +1,13 @@
 <?php
+/**
+ * ==============================================================================
+ * FICHERO: app/Http/Controllers/AnimalController.php
+ * AUTOR: Alberto
+ * FECHA CREACIÓN: 2026-04-25
+ * FUNCIÓN: Controlador público que gestiona el listado de animales,
+ *          aplicando filtros en el servidor según tamaño, edad y género.
+ * ==============================================================================
+ */
 
 namespace App\Http\Controllers;
 
@@ -13,7 +22,10 @@ use Inertia\Inertia;
 class AnimalController extends Controller
 {
     /**
-     * Muestra el listado de animales con opciones de filtrado.
+     * MÉTODO: index
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-04-25
+     * FUNCIÓN: Muestra el listado de animales con opciones de filtrado.
      * 
      * @param \Illuminate\Http\Request $request Objeto con los parámetros de la petición (filtros).
      * @return \Inertia\Response Renderiza la vista 'Adopta' con los datos filtrados.

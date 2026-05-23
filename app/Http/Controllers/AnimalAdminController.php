@@ -1,4 +1,13 @@
 <?php
+/**
+ * ==============================================================================
+ * FICHERO: app/Http/Controllers/AnimalAdminController.php
+ * AUTOR: Alberto
+ * FECHA CREACIÓN: 2026-05-21
+ * FUNCIÓN: Controlador de administración (CRUD) para gestionar de forma segura
+ *          las fichas de animales en adopción (solo accesible por administradores).
+ * ==============================================================================
+ */
 
 namespace App\Http\Controllers;
 
@@ -14,7 +23,11 @@ use Inertia\Inertia;
 class AnimalAdminController extends Controller
 {
     /**
-     * Verifica si el usuario autenticado es administrador.
+     * MÉTODO: verificarAdmin
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-05-21
+     * FUNCIÓN: Verifica si el usuario autenticado tiene el rol de administrador,
+     *          de lo contrario lanza una excepción HTTP 403.
      */
     private function verificarAdmin()
     {
@@ -24,7 +37,10 @@ class AnimalAdminController extends Controller
     }
 
     /**
-     * Mostrar la página de índice.
+     * MÉTODO: index
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-05-21
+     * FUNCIÓN: Muestra la lista de todos los animales registrados.
      */
     public function index(Request $request)
     {
@@ -37,7 +53,10 @@ class AnimalAdminController extends Controller
     }
 
     /**
-     * Mostrar el formulario para crear un nuevo recurso.
+     * MÉTODO: create
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-05-21
+     * FUNCIÓN: Muestra el formulario para registrar un nuevo perro.
      */
     public function create(Request $request)
     {
@@ -49,7 +68,10 @@ class AnimalAdminController extends Controller
     }
 
     /**
-     * Almacenar un nuevo recurso en la base de datos.
+     * MÉTODO: store
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-05-21
+     * FUNCIÓN: Valida la petición de creación y almacena la ficha con la imagen.
      */
     public function store(Request $request)
     {

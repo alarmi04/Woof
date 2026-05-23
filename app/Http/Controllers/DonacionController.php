@@ -1,4 +1,13 @@
 <?php
+/**
+ * ==============================================================================
+ * FICHERO: app/Http/Controllers/DonacionController.php
+ * AUTOR: Alberto
+ * FECHA CREACIÓN: 2026-05-07
+ * FUNCIÓN: Controlador que gestiona el registro de aportaciones materiales
+ *          y la visualización agregada del ranking dinámico de donaciones.
+ * ==============================================================================
+ */
 
 namespace App\Http\Controllers;
 
@@ -14,7 +23,11 @@ use Inertia\Inertia;
 class DonacionController extends Controller
 {
     /**
-     * Muestra la página de donaciones con el ranking actual.
+     * MÉTODO: index
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-05-07
+     * FUNCIÓN: Muestra la página de donaciones con el ranking dinámico actual
+     *          y la lista de materiales requeridos.
      * 
      * @return \Inertia\Response
      */
@@ -56,7 +69,10 @@ class DonacionController extends Controller
     }
 
     /**
-     * Procesa y guarda una nueva donación.
+     * MÉTODO: store
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-05-07
+     * FUNCIÓN: Valida y persiste una nueva donación de material o monetaria.
      * 
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse

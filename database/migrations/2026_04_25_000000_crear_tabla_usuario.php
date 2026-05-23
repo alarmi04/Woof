@@ -1,4 +1,13 @@
 <?php
+/**
+ * ==============================================================================
+ * FICHERO: database/migrations/2026_04_25_000000_crear_tabla_usuario.php
+ * AUTOR: Alberto
+ * FECHA CREACIÓN: 2026-04-25
+ * FUNCIÓN: Migración de base de datos que define la estructura física
+ *          de la tabla 'Usuario' (identidad y perfil de adopción).
+ * ==============================================================================
+ */
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -6,7 +15,11 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     /**
-     * Run the migrations.
+     * MÉTODO: up
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-04-25
+     * FUNCIÓN: Crea la tabla física 'Usuario' con los campos de datos de contacto
+     *          y las variables del cuestionario para el recomendador canino.
      */
     public function up(): void
     {
@@ -26,7 +39,10 @@ return new class extends Migration {
     }
 
     /**
-     * Reverse the migrations.
+     * MÉTODO: down
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-04-25
+     * FUNCIÓN: Revierte la migración eliminando la tabla física 'Usuario' de MySQL.
      */
     public function down(): void
     {

@@ -1,6 +1,20 @@
+# ==============================================================================
+# FICHERO: python_logic/recomendar.py
+# AUTOR: Alberto
+# FECHA CREACIÓN: 2026-04-25
+# FUNCIÓN: Motor de recomendación inteligente. Procesa los datos del adoptante
+#          y calcula la compatibilidad con los perros para dar el mejor match.
+# ==============================================================================
+
 import sys
 import json
 
+# ------------------------------------------------------------------------------
+# FUNCIÓN: calcular_puntuacion
+# AUTOR: Alberto
+# FECHA CREACIÓN: 2026-04-25
+# DESCRIPCIÓN: Evalúa y puntúa las variables de perfil cruzado del perro y usuario.
+# ------------------------------------------------------------------------------
 def calcular_puntuacion(usuario, perro):
     """
     Calcula la compatibilidad entre un usuario y un perro basándose en varios factores.
@@ -74,6 +88,12 @@ def calcular_puntuacion(usuario, perro):
     
     return puntuacion, razon_final
 
+# ------------------------------------------------------------------------------
+# FUNCIÓN: main
+# AUTOR: Alberto
+# FECHA CREACIÓN: 2026-04-25
+# DESCRIPCIÓN: Lee el JSON de stdin, calcula afinidades y escribe el top 3 en stdout.
+# ------------------------------------------------------------------------------
 def main():
     """
     Punto de entrada principal del script.

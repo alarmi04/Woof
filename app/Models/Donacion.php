@@ -1,4 +1,13 @@
 <?php
+/**
+ * ==============================================================================
+ * FICHERO: app/Models/Donacion.php
+ * AUTOR: Alberto
+ * FECHA CREACIÓN: 2026-05-07
+ * FUNCIÓN: Modelo Eloquent que mapea la entidad Donacion en base de datos,
+ *          gestionando relaciones con el donante (Usuario) y material donado.
+ * ==============================================================================
+ */
 
 namespace App\Models;
 
@@ -37,7 +46,10 @@ class Donacion extends Model
     ];
 
     /**
-     * Relación con el material donado.
+     * RELACIÓN: material
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-05-07
+     * FUNCIÓN: Define la relación de pertenencia N:1 de la donación con el Material.
      */
     public function material()
     {
@@ -45,8 +57,10 @@ class Donacion extends Model
     }
 
     /**
-     * Relación con el usuario que realizó la donación.
-     * Puede ser nula si la donación es anónima.
+     * RELACIÓN: usuario
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-05-07
+     * FUNCIÓN: Define la relación N:1 opcional con el Usuario que realiza la donación.
      */
     public function usuario()
     {

@@ -1,4 +1,13 @@
 <?php
+/**
+ * ==============================================================================
+ * FICHERO: database/migrations/2026_04_25_000005_crear_tabla_animal.php
+ * AUTOR: Alberto
+ * FECHA CREACIÓN: 2026-04-25
+ * FUNCIÓN: Migración de base de datos que define la estructura física y las
+ *          restricciones referenciales de la tabla 'Animal' (catálogo canino).
+ * ==============================================================================
+ */
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -6,7 +15,11 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     /**
-     * Run the migrations.
+     * MÉTODO: up
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-04-25
+     * FUNCIÓN: Crea la tabla física 'Animal' con sus campos de caracterización canina
+     *          y la clave foránea vinculante hacia la tabla 'Usuario'.
      */
     public function up(): void
     {
@@ -32,7 +45,10 @@ return new class extends Migration {
     }
 
     /**
-     * Reverse the migrations.
+     * MÉTODO: down
+     * AUTOR: Alberto
+     * FECHA CREACIÓN: 2026-04-25
+     * FUNCIÓN: Revierte la migración eliminando la tabla física 'Animal' de MySQL.
      */
     public function down(): void
     {
