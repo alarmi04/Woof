@@ -23,6 +23,9 @@ class AnimalController extends Controller
         // Iniciamos la consulta base
         $consulta = Animal::query();
 
+        // Excluir perros adoptados
+        $consulta->where('Estado', '!=', 'adoptado');
+
         // Filtrado por tamaño
         if ($request->has('tamano') && $request->tamano != 'todos') {
             $consulta->where('Tamano', 'LIKE', $request->tamano);

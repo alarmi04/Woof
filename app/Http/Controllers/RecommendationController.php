@@ -49,9 +49,9 @@ class RecommendationController extends Controller
         }
 
         /**
-         * Obtenemos todos los animales de la base de datos para enviarlos al recomendador de Python.
+         * Obtenemos todos los animales de la base de datos que NO estén adoptados para enviarlos al recomendador de Python.
          */
-        $animales = Animal::all();
+        $animales = Animal::where('Estado', '!=', 'adoptado')->get();
 
         // Estructura de datos para enviar al script externo
         $datosParaPython = [
@@ -88,6 +88,7 @@ class RecommendationController extends Controller
          * Mantenemos el orden de relevancia devuelto por la IA.
          */
         $perrosRecomendados = Animal::whereIn('idAnimal', $idsRecomendados)
+            ->where('Estado', '!=', 'adoptado')
             ->get()
             ->map(function($animal) use ($razonesMatch) {
                 $animal->match_reason = $razonesMatch[$animal->idAnimal] ?? '';

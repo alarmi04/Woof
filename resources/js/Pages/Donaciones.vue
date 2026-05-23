@@ -5,11 +5,28 @@ import Footer from '@/Components/Footer.vue';
 import { ref } from 'vue';
 
 const props = defineProps({
-    ranking: Array
+    ranking: Array,
+    materiales: Array
 });
 
 /** 
- * Cantidad predeterminada seleccionada por el usuario (en euros).
+ * Material seleccionado. Por defecto el primero (Dinero).
+ */
+const materialSeleccionado = ref(props.materiales?.[0] || { idMaterial: 1, Nombre: 'Dinero' });
+
+/** 
+ * Determina la unidad de medida según el material.
+ */
+const getUnidad = (nombre) => {
+    switch (nombre) {
+        case 'Dinero': return ' €';
+        case 'Comida': return ' Kg';
+        default: return ' uds';
+    }
+};
+
+/** 
+ * Cantidad predeterminada seleccionada por el usuario.
  */
 const cantidadSeleccionada = ref(10);
 
@@ -23,7 +40,8 @@ const cantidadPersonalizada = ref('');
  */
 const formulario = useForm({
     cantidad: 10,
-    mensaje: ''
+    idMaterial: materialSeleccionado.value.idMaterial,
+    observaciones: ''
 });
 
 /** 
@@ -33,17 +51,17 @@ const opcionesCantidades = [5, 10, 20, 50];
 
 /**
  * Procesa la intención de donación del usuario.
- * Envía los datos al servidor para guardarlos en la base de datos.
  */
 const procesarDonacion = () => {
     formulario.cantidad = cantidadPersonalizada.value || cantidadSeleccionada.value;
+    formulario.idMaterial = materialSeleccionado.value.idMaterial;
     
     formulario.post(route('donaciones.store'), {
         preserveScroll: true,
         onSuccess: () => {
             alert('¡Muchísimas gracias por tu donación! Tu ayuda aparecerá en el ranking en unos instantes.');
             cantidadPersonalizada.value = '';
-            formulario.reset('mensaje');
+            formulario.reset('observaciones');
         },
     });
 };
@@ -78,7 +96,7 @@ const procesarDonacion = () => {
                         </div>
                         <div class="donor-info">
                             <span class="donor-name">{{ donante.donante }}</span>
-                            <span class="donor-total">{{ donante.total }}€</span>
+                            <span class="donor-total">{{ donante.total }}{{ getUnidad(donante.tipo) }}</span>
                         </div>
                     </div>
                 </div>
@@ -112,34 +130,59 @@ const procesarDonacion = () => {
         <!-- Donation Form -->
         <section class="donar-form-section">
             <div class="donar-container">
-                <div class="donar-box">
-                    <h2>Haz tu donación</h2>
-                    <p class="donar-desc">Elige una cantidad para colaborar con Woof!</p>
-                    
-                    <div class="amount-selector">
-                        <button 
-                            v-for="cantidad in opcionesCantidades" 
-                            :key="cantidad"
-                            @click="cantidadSeleccionada = cantidad; cantidadPersonalizada = ''"
-                            :class="{ active: cantidadSeleccionada === cantidad && !cantidadPersonalizada }"
-                        >
-                            {{ cantidad }}€
+                    <div class="donar-box">
+                        <h2>Haz tu donación</h2>
+                        <p class="donar-desc">Elige qué quieres donar y la cantidad para colaborar con Woof!</p>
+                        
+                        <!-- Selector de Material -->
+                        <div class="material-selector">
+                            <label>¿Qué deseas donar?</label>
+                            <div class="material-grid">
+                                <button 
+                                    v-for="mat in materiales" 
+                                    :key="mat.idMaterial"
+                                    @click="materialSeleccionado = mat"
+                                    :class="{ active: materialSeleccionado.idMaterial === mat.idMaterial }"
+                                    type="button"
+                                >
+                                    {{ mat.Nombre }}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="amount-selector">
+                            <button 
+                                v-for="cantidad in opcionesCantidades" 
+                                :key="cantidad"
+                                @click="cantidadSeleccionada = cantidad; cantidadPersonalizada = ''"
+                                :class="{ active: cantidadSeleccionada === cantidad && !cantidadPersonalizada }"
+                                type="button"
+                            >
+                                {{ cantidad }}{{ getUnidad(materialSeleccionado.Nombre) }}
+                            </button>
+                        </div>
+
+                        <div class="custom-amount">
+                            <input 
+                                type="number" 
+                                v-model="cantidadPersonalizada" 
+                                :placeholder="'Otra cantidad (' + getUnidad(materialSeleccionado.Nombre) + ')'"
+                                @input="cantidadSeleccionada = null"
+                            >
+                            <span class="currency">{{ getUnidad(materialSeleccionado.Nombre) }}</span>
+                        </div>
+
+                        <div class="observations-field">
+                            <textarea 
+                                v-model="formulario.observaciones" 
+                                placeholder="Escribe un mensaje u observaciones opcionales..."
+                                rows="2"
+                            ></textarea>
+                        </div>
+
+                        <button @click="procesarDonacion" class="donate-submit-btn">
+                            Donar {{ cantidadPersonalizada || cantidadSeleccionada }}{{ getUnidad(materialSeleccionado.Nombre) }} ahora
                         </button>
-                    </div>
-
-                    <div class="custom-amount">
-                        <input 
-                            type="number" 
-                            v-model="cantidadPersonalizada" 
-                            placeholder="Otra cantidad"
-                            @input="cantidadSeleccionada = null"
-                        >
-                        <span class="currency">€</span>
-                    </div>
-
-                    <button @click="procesarDonacion" class="donate-submit-btn">
-                        Donar {{ cantidadPersonalizada || cantidadSeleccionada }}€ ahora
-                    </button>
 
                     <div class="payment-methods">
                         <p>Pagos seguros con:</p>
@@ -405,7 +448,7 @@ const procesarDonacion = () => {
     background: white;
     border-radius: 12px;
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1.0rem;
     color: #555;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -448,6 +491,67 @@ const procesarDonacion = () => {
     transform: translateY(-50%);
     font-weight: 700;
     color: #999;
+}
+
+.material-selector {
+    margin-bottom: 2rem;
+}
+
+.material-selector label {
+    display: block;
+    font-weight: 700;
+    color: #555;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.material-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.8rem;
+}
+
+.material-grid button {
+    padding: 0.8rem;
+    border: 2px solid #eee;
+    background: #f9f9f9;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.material-grid button:hover {
+    border-color: #f2790f;
+    color: #f2790f;
+}
+
+.material-grid button.active {
+    background: #f2790f;
+    border-color: #f2790f;
+    color: white;
+}
+
+.observations-field {
+    margin-bottom: 2rem;
+}
+
+.observations-field textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #eee;
+    border-radius: 12px;
+    font-size: 1rem;
+    outline: none;
+    resize: none;
+    transition: border-color 0.2s;
+}
+
+.observations-field textarea:focus {
+    border-color: #f2790f;
 }
 
 .donate-submit-btn {

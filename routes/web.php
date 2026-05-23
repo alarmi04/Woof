@@ -36,7 +36,12 @@ Route::get('/perros-recomendados', [\App\Http\Controllers\RecommendationControll
 Route::get('/donaciones', [\App\Http\Controllers\DonacionController::class, 'index'])->name('donaciones');
 Route::post('/donaciones', [\App\Http\Controllers\DonacionController::class, 'store'])->name('donaciones.store');
 
-Route::get('/contacto', function () {
-    return Inertia::render('Contacto');
+Route::get('/contacto', [\App\Http\Controllers\ContactoController::class, 'index'])->name('contacto');
+Route::post('/contacto', [\App\Http\Controllers\ContactoController::class, 'send'])->name('contacto.send');
+
+// Rutas de Administración (solo para admins)
+Route::prefix('admin')->middleware(['auth', 'verified'])->group(function () {
+    Route::resource('animales', \App\Http\Controllers\AnimalAdminController::class, ['parameters' => ['animales' => 'animal']])->names('admin.animales');
 });
+
 require __DIR__ . '/auth.php';

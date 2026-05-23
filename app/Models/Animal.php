@@ -45,6 +45,17 @@ class Animal extends Model
     ];
 
     /**
+     * Accesor para obtener la URL completa de la imagen.
+     */
+    public function getImagenUrlAttribute()
+    {
+        if ($this->Imagen) {
+            return '/storage/' . $this->Imagen;
+        }
+        return null;
+    }
+
+    /**
      * Relación con el usuario (dueño o protector).
      */
     public function usuario()

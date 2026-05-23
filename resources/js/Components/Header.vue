@@ -22,6 +22,16 @@ const user = computed(() => page.props.auth.user);
         <Link href="/donaciones" :class="{ 'active': $page.url === '/donaciones' }">Donar</Link>
         <Link href="/contacto" :class="{ 'active': $page.url === '/contacto' }">Contacto</Link>
 
+        <!-- Opción de Mantenimiento (solo para admins) -->
+        <Link 
+            v-if="user && user.is_admin" 
+            href="/admin/animales" 
+            :class="{ 'active': $page.url.startsWith('/admin') }"
+            class="admin-link"
+        >
+            Mantenimiento
+        </Link>
+
         <!-- Sección de Usuario -->
         <div v-if="user" class="user-nav">
             <Link href="/profile" class="profile-link" :class="{ 'active': $page.url === '/profile' }">
@@ -144,6 +154,23 @@ const user = computed(() => page.props.auth.user);
 .login-btn {
     background-color: #f2790f !important;
     color: white !important;
+}
+
+.admin-link {
+    background-color: #d97f11 !important;
+    color: white !important;
+    font-weight: 600;
+}
+
+.admin-link:hover {
+    background-color: #b86000 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(217, 127, 17, 0.3);
+}
+
+.admin-link.active {
+    background-color: #f2d888 !important;
+    color: #d97f11 !important;
 }
 
 </style>

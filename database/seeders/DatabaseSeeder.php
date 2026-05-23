@@ -15,12 +15,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Usuario::factory(10)->create();
-
-        Usuario::factory()->create([
-            'Nombre' => 'Test User',
-            'Correo' => 'test@example.com',
-            'Contrasena' => 'password',
+        $this->call([
+            MaterialSeeder::class,
+            AnimalSeeder::class,
         ]);
+
+        Usuario::updateOrCreate(
+            ['Correo' => 'test@example.com'],
+            [
+                'Nombre' => 'Test User',
+                'Contrasena' => 'password',
+            ]
+        );
     }
 }

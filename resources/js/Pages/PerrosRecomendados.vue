@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, onUnmounted } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import Header from '@/Components/Header.vue';
 import Footer from '@/Components/Footer.vue';
@@ -11,6 +11,31 @@ const props = defineProps({
 
 const page = usePage();
 const user = computed(() => page.props.auth?.user ?? null);
+
+// ================= ESTADO Y LÓGICA DEL MODAL DE FICHA =================
+const perroSeleccionado = ref(null);
+
+const abrirFicha = (perro) => {
+    perroSeleccionado.value = perro;
+    document.body.style.overflow = 'hidden'; // Prevenir scroll
+};
+
+const cerrarFicha = () => {
+    perroSeleccionado.value = null;
+    document.body.style.overflow = '';
+};
+
+onUnmounted(() => {
+    document.body.style.overflow = '';
+});
+
+const getImageUrl = (perro) => {
+    if (!perro) return '/images/default-perro.jpg';
+    const img = perro.Imagen || perro.imagen;
+    if (!img) return '/images/default-perro.jpg';
+    if (img.startsWith('http')) return img;
+    return img.includes('storage') ? img : '/storage/' + img;
+};
 </script>
 
 <template>
@@ -65,7 +90,7 @@ const user = computed(() => page.props.auth?.user ?? null);
                     <div class="perro-badge" v-if="index === 0">Mejor Opción ⭐</div>
                     <div class="perro-img-wrapper">
                         <img 
-                            :src="perro.Imagen ? (perro.Imagen.startsWith('http') ? perro.Imagen : '/storage/' + perro.Imagen) : '/images/default-dog.jpg'" 
+                            :src="getImageUrl(perro)" 
                             :alt="perro.Nombre"
                         >
                     </div>
@@ -79,7 +104,7 @@ const user = computed(() => page.props.auth?.user ?? null);
                         <p class="match-reason" v-if="perro.match_reason">
                             {{ perro.match_reason }}
                         </p>
-                        <Link :href="route('adopta')" class="ver-mas-btn">Conocer a {{ perro.Nombre }}</Link>
+                        <button @click="abrirFicha(perro)" class="ver-mas-btn" style="cursor: pointer;">Conocer a {{ perro.Nombre }}</button>
                     </div>
                 </div>
             </div>
@@ -91,6 +116,49 @@ const user = computed(() => page.props.auth?.user ?? null);
         </div>
 
     </section>
+
+    <!-- MODAL DE FICHA DEL PERRO -->
+    <div v-if="perroSeleccionado" class="modal-overlay" @click.self="cerrarFicha">
+        <div class="modal-content">
+            <button class="modal-close" @click="cerrarFicha">×</button>
+            <div class="modal-body">
+                <div class="modal-img-container">
+                    <img :src="getImageUrl(perroSeleccionado)" :alt="perroSeleccionado.Nombre" />
+                </div>
+                <div class="modal-info">
+                    <h2>{{ perroSeleccionado.Nombre }}</h2>
+                    <p class="raza">{{ perroSeleccionado.Raza }}</p>
+                    
+                    <div class="modal-tags">
+                        <span>🐶 {{ perroSeleccionado.Tamano }}</span>
+                        <span>🎂 {{ isNaN(perroSeleccionado.Edad) ? perroSeleccionado.Edad : perroSeleccionado.Edad + ' años' }}</span>
+                        <span>⚧️ {{ perroSeleccionado.Genero }}</span>
+                    </div>
+
+                    <p class="modal-desc">{{ perroSeleccionado.Descripcion }}</p>
+
+                    <!-- SECCIÓN DE COMPATIBILIDAD IA -->
+                    <div class="compatibilidad-section">
+                        <h3>🤖 Análisis de Compatibilidad IA</h3>
+                        <div class="compat-box success">
+                            <div class="compat-header">
+                                <span class="compat-icon">✨</span>
+                                <h4>¡Alta Compatibilidad!</h4>
+                            </div>
+                            <p>{{ perroSeleccionado.match_reason || 'Un compañero equilibrado para ti.' }}</p>
+                        </div>
+                    </div>
+
+                    <!-- BOTÓN DE ADOPCIÓN -->
+                    <div class="modal-actions" style="margin-top: 2rem; text-align: center;">
+                        <Link :href="route('contacto')" class="btn-adoptar">
+                            🐾 ¡Quiero Adoptar a {{ perroSeleccionado.Nombre }}!
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <Footer />
 </template>
@@ -352,5 +420,200 @@ const user = computed(() => page.props.auth?.user ?? null);
     font-size: 1.2rem;
     color: #666;
     margin-bottom: 2rem;
+}
+
+/* Modal Ficha Perro */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    animation: slideUp 0.3s ease;
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2rem;
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    z-index: 10;
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: #f2790f;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 768px) {
+    .modal-body {
+        flex-direction: row;
+    }
+}
+
+.modal-img-container {
+    flex: 1;
+    min-height: 300px;
+}
+
+.modal-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px 20px 0 0;
+}
+
+@media (min-width: 768px) {
+    .modal-img-container img {
+        border-radius: 20px 0 0 20px;
+    }
+}
+
+.modal-info {
+    flex: 1.5;
+    padding: 2.5rem;
+    text-align: left;
+}
+
+.modal-info h2 {
+    font-size: 2.2rem;
+    color: #d97f11;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.modal-info .raza {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.modal-tags {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.modal-tags span {
+    background: #fef3c7;
+    color: #b45309;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: none;
+}
+
+.modal-desc {
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 2rem;
+    font-size: 1.05rem;
+}
+
+.compatibilidad-section {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 15px;
+    border: 1px solid #eee;
+}
+
+.compatibilidad-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.compat-box {
+    padding: 1rem;
+    border-radius: 12px;
+}
+
+.compat-box.success {
+    background: #f0fdf4;
+    border-left: 4px solid #22c55e;
+}
+
+.compat-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.compat-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.compat-icon {
+    font-size: 1.5rem;
+}
+
+.compat-box p {
+    margin-bottom: 0;
+    color: #4b5563;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.btn-adoptar {
+    display: inline-block;
+    width: 100%;
+    padding: 1.2rem;
+    background: linear-gradient(135deg, #f2790f, #d97f11);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    box-shadow: 0 10px 20px rgba(242, 121, 15, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-adoptar:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 25px rgba(242, 121, 15, 0.4);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 </style>

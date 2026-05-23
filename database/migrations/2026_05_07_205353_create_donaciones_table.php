@@ -15,11 +15,14 @@ return new class extends Migration
             $table->id('idDonacion');
             // Relación con el usuario, puede ser NULL para donaciones anónimas
             $table->unsignedBigInteger('idUsuario')->nullable();
+            $table->unsignedBigInteger('idMaterial')->nullable();
             $table->decimal('Cantidad', 10, 2);
-            $table->string('Mensaje', 255)->nullable();
+            $table->string('Observaciones', 300)->nullable();
+            $table->string('Tipo_donacion', 20);
             $table->timestamp('Fecha')->useCurrent();
 
             $table->foreign('idUsuario')->references('idUsuario')->on('Usuario')->onDelete('set null');
+            $table->foreign('idMaterial')->references('idMaterial')->on('Material')->onDelete('set null');
         });
     }
 

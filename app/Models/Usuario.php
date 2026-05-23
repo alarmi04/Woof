@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Hash;
  */
 class Usuario extends Authenticatable
 {
-    use Notifiable;
+    use HasFactory, Notifiable;
 
     /**
      * Tabla asociada al modelo.
@@ -44,6 +45,7 @@ class Usuario extends Authenticatable
         'Experiencia_mascotas',
         'Tiempo_disponible',
         'Foto',
+        'is_admin',
     ];
 
     /**
@@ -86,5 +88,21 @@ class Usuario extends Authenticatable
     public function animales()
     {
         return $this->hasMany(Animal::class, 'idUsuario', 'idUsuario');
+    }
+
+    /**
+     * Obtiene el correo electrónico para el restablecimiento de contraseña.
+     */
+    public function getEmailForPasswordReset()
+    {
+        return $this->Correo;
+    }
+
+    /**
+     * Enruta las notificaciones por correo al campo correcto.
+     */
+    public function routeNotificationForMail($notification)
+    {
+        return $this->Correo;
     }
 }

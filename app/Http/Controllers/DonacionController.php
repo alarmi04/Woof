@@ -22,22 +22,36 @@ class DonacionController extends Controller
     {
         /**
          * Obtenemos el ranking de donaciones.
-         * Sumamos las cantidades por usuario y traemos el nombre del usuario.
-         * Si el usuario es NULL, lo agrupamos como 'Anónimo'.
+         * Sumamos las cantidades por usuario registrado.
+         * Las donaciones anónimas se tratan como individuales (no se acumulan entre sí).
          */
-        $ranking = Donacion::select(
-                DB::raw('COALESCE(Usuario.Nombre, "Anónimo") as donante'),
-                DB::raw('SUM(Cantidad) as total'),
-                'Usuario.Foto'
+        $usuariosRanking = Donacion::select(
+                'Usuario.Nombre as donante',
+                DB::raw('SUM(Donacion.Cantidad) as total'),
+                'Usuario.Foto',
+                'Tipo_donacion as tipo'
             )
-            ->leftJoin('Usuario', 'Donacion.idUsuario', '=', 'Usuario.idUsuario')
-            ->groupBy('donante', 'Usuario.Foto')
+            ->join('Usuario', 'Donacion.idUsuario', '=', 'Usuario.idUsuario')
+            ->groupBy('Usuario.idUsuario', 'Usuario.Nombre', 'Usuario.Foto', 'Tipo_donacion');
+
+        $anonimosRanking = Donacion::select(
+                DB::raw('"Anónimo" as donante'),
+                'Cantidad as total',
+                DB::raw('NULL as Foto'),
+                'Tipo_donacion as tipo'
+            )
+            ->whereNull('idUsuario');
+
+        $ranking = $usuariosRanking->unionAll($anonimosRanking)
             ->orderBy('total', 'desc')
             ->limit(10)
             ->get();
 
+        $materiales = \App\Models\Material::all();
+
         return Inertia::render('Donaciones', [
-            'ranking' => $ranking
+            'ranking' => $ranking,
+            'materiales' => $materiales
         ]);
     }
 
@@ -51,13 +65,18 @@ class DonacionController extends Controller
     {
         $request->validate([
             'cantidad' => 'required|numeric|min:1',
-            'mensaje' => 'nullable|string|max:255',
+            'idMaterial' => 'required|exists:Material,idMaterial',
+            'observaciones' => 'nullable|string|max:255',
         ]);
+
+        $material = \App\Models\Material::find($request->idMaterial);
 
         Donacion::create([
             'idUsuario' => Auth::check() ? Auth::user()->idUsuario : null,
+            'idMaterial' => $request->idMaterial,
             'Cantidad' => $request->cantidad,
-            'Mensaje' => $request->mensaje,
+            'Observaciones' => $request->observaciones,
+            'Tipo_donacion' => $material->Nombre, // Usamos el nombre del material como tipo
             'Fecha' => now(),
         ]);
 

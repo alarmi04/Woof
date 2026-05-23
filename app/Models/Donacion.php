@@ -29,10 +29,20 @@ class Donacion extends Model
      */
     protected $fillable = [
         'idUsuario',
+        'idMaterial',
         'Cantidad',
-        'Mensaje',
+        'Observaciones',
+        'Tipo_donacion',
         'Fecha',
     ];
+
+    /**
+     * Relación con el material donado.
+     */
+    public function material()
+    {
+        return $this->belongsTo(Material::class, 'idMaterial', 'idMaterial');
+    }
 
     /**
      * Relación con el usuario que realizó la donación.
