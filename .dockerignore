@@ -1,0 +1,17 @@
+node_modules
+vendor
+.git
+.github
+.env
+.env.backup
+.phpunit.result.cache
+public/build
+storage/*.key
+storage/app/public/perros/*
+storage/app/public/perfiles/*
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+docker-compose.yml
+Dockerfile
+.dockerignore
