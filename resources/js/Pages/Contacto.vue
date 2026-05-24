@@ -65,7 +65,7 @@ const submit = () => {
             <div class="contacto-card">
                 <div class="card-icon">📍</div>
                 <h2>Dirección</h2>
-                <p>Calle de los Animales, 123<br>28001, Madrid</p>
+                <p>Valencia, Comunidad Valenciana</p>
             </div>
         </div>
 

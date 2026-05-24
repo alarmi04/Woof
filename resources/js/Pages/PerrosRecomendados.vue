@@ -17,7 +17,7 @@ const perroSeleccionado = ref(null);
 
 const abrirFicha = (perro) => {
     perroSeleccionado.value = perro;
-    document.body.style.overflow = 'hidden'; // Prevenir scroll
+    document.body.style.overflow = 'hidden';
 };
 
 const cerrarFicha = () => {
@@ -35,6 +35,18 @@ const getImageUrl = (perro) => {
     if (!img) return '/images/default-perro.jpg';
     if (img.startsWith('http')) return img;
     return img.includes('storage') ? img : '/storage/' + img;
+};
+
+const generarUrlContactoAdopcion = () => {
+    if (!perroSeleccionado.value) return '#';
+    
+    const nombrePerro = perroSeleccionado.value.Nombre || 'el perro';
+    const mensaje = `Hola, me gustaría tener más información para adoptar a ${nombrePerro}.`;
+    
+    return route('contacto', { 
+        asunto: 'adopcion', 
+        mensaje: mensaje
+    });
 };
 </script>
 
@@ -151,7 +163,7 @@ const getImageUrl = (perro) => {
 
                     <!-- BOTÓN DE ADOPCIÓN -->
                     <div class="modal-actions" style="margin-top: 2rem; text-align: center;">
-                        <Link :href="route('contacto')" class="btn-adoptar">
+                        <Link :href="generarUrlContactoAdopcion()" class="btn-adoptar">
                             🐾 ¡Quiero Adoptar a {{ perroSeleccionado.Nombre }}!
                         </Link>
                     </div>
