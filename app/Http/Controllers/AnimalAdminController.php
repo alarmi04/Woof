@@ -151,6 +151,9 @@ class AnimalAdminController extends Controller
                     Storage::disk('public')->delete($animal->Imagen);
                 }
                 $validado['Imagen'] = $request->file('Imagen')->store('perros', 'public');
+            } else {
+                // Si no se subió una nueva imagen, mantener la existente
+                unset($validado['Imagen']);
             }
         }
 
